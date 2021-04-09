@@ -1,26 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import {BrowserRouter,Route,Switch,Redirect} from 'react-router-dom';
+import SignIn from './pages/sign-in/Sign-in';
+import CitizenDetails from './pages/master-page/citizen/citizen-details/CitizenDetails';
+import AllCitizens from './pages/master-page/citizen/all-citizen/AllCitizens';
+import {ProtectedRoute} from './router/ProtectedRoute';
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+         <Switch>
+            <Redirect exact from="/" to="/signin" />
+            <Route exact path="/signin" component={SignIn}/>
+            <ProtectedRoute exact path="/citizen" component={AllCitizens}/>
+            <ProtectedRoute exact path="/citizen/:id" component={CitizenDetails}/>
+            <Redirect to="/" />
+         </Switch>        
+    </BrowserRouter>
   );
 }
 
 export default App;
+
