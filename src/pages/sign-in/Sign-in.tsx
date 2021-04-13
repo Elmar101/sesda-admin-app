@@ -9,32 +9,40 @@ import XButton from '../../x-lib/components/XButton';
 import XTextField from '../../x-lib/components/XTextField';
 import XInput from '../../x-lib/components/XInput';
 import XTypography from '../../x-lib/components/XTypography';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory} from 'react-router-dom';
 import XLoader from '../../x-lib/components/XLoader';
 
 const SignIn = (props:any) => {
-    let history = useHistory();
+    const history = useHistory();
     const classes = useStyles(); 
     const {showLoader} = props;
 
     const [user,setUser] = useState<User>(
         {userName:'', password: '' }
     )
-    const [state, setState] = useState<{status: string; data: any, error: any}>({status: 'idle', data: null, error: null});
+
+    const [state, setState] = useState<{status: string, type:any, messages: any}>({status: 'idle',type:null,
+     messages: null});
 
     const LoginSubmitHandler = async (e:any) => {
         e.preventDefault();
         const {userName, password} = user;
         const creds = {userName, password};
-        setState({...state,status:"pending",error:null});
+        setState({...state, status: 'idle', type:null ,messages:null});
+        console.log('WORKS')
         
         try{
+            if (!userName || !password) return ;
+            setState({...state,status:"pending",messages:null});
             await LoginService(creds);
-            await  fetchUserDataByAuthToken();
-                  history.push("/citizen");
+            await fetchUserDataByAuthToken();
+            setState({...state,status:"completed",type:'success',messages:'dmadmin sistemine daxil olursuz'});
+             setTimeout(() => {
+                 history.push("/citizen");
+            }, 3000)
         }catch(err){
-            setState({...state,error: err.response.data.message});
-            setTimeout(()=>setState({...state, error:null}),3000);
+            setState({...state,status: 'rejected',type:'error', messages: err.response.data.message});
+            setTimeout(()=>setState({...state, status: 'idle', type:null ,messages:null}),3000);
         }
         setUser({...user,userName:'',password:''})
     }
@@ -42,12 +50,12 @@ const SignIn = (props:any) => {
 
     const handlePasswordChange = (e:any) => {
         setUser({ ...user, password: e.target.value });
-        setState({...state,error:null});
+        setState({...state,messages:null});
     };
 
     const handleUserName = (e:any)=> {
          setUser({...user,userName:e.target.value}); 
-         setState({...state,error:null});
+         setState({...state,messages:null});
     } 
 
     const handleClickShowPassword = () => {
@@ -78,7 +86,7 @@ const SignIn = (props:any) => {
                             label="istifadəcçi adı" 
                             placeholder="istifadəçi adı*"
                             fullWidth 
-                            required/>
+                            />
                         
                         <FormControl fullWidth style={{marginTop: '15px'}}>
                              <XInput 
@@ -94,7 +102,6 @@ const SignIn = (props:any) => {
                         <XButton 
                             type="submit" 
                             disabled={buttonEnabled || showLoader} 
-                            buttonEnabl={buttonEnabled} 
                         >
                         {
                             state.status==="pending" ? <XLoader/> : "Daxil ol"
@@ -104,7 +111,7 @@ const SignIn = (props:any) => {
                 </Grid>
             </form>
             {
-              state.error && <XSnackbar type="error" error={state.error}/>
+              <XSnackbar type={state.type} message={state.messages}/>
             }
         </>
     )

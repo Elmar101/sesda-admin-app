@@ -1,11 +1,28 @@
+const BASE_URL = 'http://172.16.208.15:8888';
 
-const baseUrl = 'http://172.16.208.15:8888/api/admin';
+const SESDA_API_URL = 'api/sesda';
 
-export const sesdaApiUrl = `${baseUrl}/login`;
+function makeUrl(url: string): string {
+    return `${BASE_URL}/${SESDA_API_URL}/${url}`;
+}
 
-export const getAllCitizen = `${baseUrl}/citizen`;
+
+export const API_LOGIN = makeUrl('login');
+export const API_TREE = makeUrl('tree');
 
 
+class SesdaApi{
+
+    baseUrl = 'http://172.16.208.15:8888/api/admin';
+
+    sesdaApiUrl = `${this.baseUrl}/login`;
+
+    getAllCitizen = `${this.baseUrl}/citizen`;
+
+    getAllTrees = `${this.baseUrl}/getalltree`;
+}
+
+export const sesdaApi:SesdaApi = new SesdaApi();
 
 /**
 

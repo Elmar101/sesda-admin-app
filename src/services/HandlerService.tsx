@@ -18,14 +18,24 @@ export interface State extends SnackbarOrigin {
   open: boolean;
 }
 
-const XSnackbar = (props:any) => {
+const HandlerService = (props:any) => {
     const classes:any = useStyles();
     const { type,message} = props;
 
     return (
     <div>
         {
-            type ==='error' && <Snackbar
+            type ==='success' && <Snackbar
+                                anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
+                                open={true}         
+                                autoHideDuration={3000}   
+                            >
+                                <SnackbarContent message={message} className={ clsx(classes[type])}/>
+                            </Snackbar>
+                            
+        }
+        {
+            type ==='info' && <Snackbar
                                 anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
                                 open={true}         
                                 autoHideDuration={5000}   
@@ -36,7 +46,7 @@ const XSnackbar = (props:any) => {
         }
 
         {
-            type ==='success' && <Snackbar
+            type ==='error' && <Snackbar
                                 anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
                                 open={true}         
                                 autoHideDuration={5000}   
@@ -57,19 +67,10 @@ const XSnackbar = (props:any) => {
                             
         }
 
-        {
-            type ==='info' && <Snackbar
-                                anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
-                                open={true}         
-                                autoHideDuration={5000}   
-                            >
-                                <SnackbarContent message={message} className={ clsx(classes[type])}/>
-                            </Snackbar>
-                            
-        }
-        
-        
     </div>
     );
 }
-export default XSnackbar;
+export default HandlerService;
+
+
+
